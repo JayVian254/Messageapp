@@ -65,6 +65,12 @@
     }
 
     init() {
+      document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    this.closeDrawer();
+    this.closeModal();
+  }
+});
       const searchForm = document.querySelector(".search-box");
 
 if (searchForm) {
