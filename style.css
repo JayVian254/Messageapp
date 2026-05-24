@@ -420,6 +420,12 @@ body {
   cursor: pointer;
   font-weight: 600;
 }
+.no-results {
+  justify-content: center;
+  color: var(--text-muted);
+  padding: 24px;
+  font-size: var(--font-size-base);
+}
 .btn-confirm {
   background: var(--accent);
   border: none;
