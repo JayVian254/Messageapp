@@ -65,6 +65,13 @@
     }
 
     init() {
+      const searchForm = document.querySelector(".search-box");
+
+if (searchForm) {
+  searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+}
       this.render();
 
       // Search
