@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Fake Messenger – a sleek and accessible chat interface" />
+  <meta name="theme-color" content="#0084ff" />
+  <title>Fake Messenger</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
+  <div class="app">
+
+    <!-- HEADER with accessible icon buttons -->
+    <header class="topbar" role="banner">
+      <h1 id="app-title">Messages</h1>
+      <nav class="top-icons" aria-label="Toolbar">
+        <button type="button" aria-label="Search chats" class="icon-btn">
+          <span aria-hidden="true">🔍</span>
+        </button>
+        <button type="button" aria-label="More options" class="icon-btn">
+          <span aria-hidden="true">⋮</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main id="main-content">
+
+      <!-- Accessible search form -->
+      <form class="search-box" role="search" aria-label="Search chats">
+        <input 
+          type="search" 
+          id="search-input"
+          name="q"
+          placeholder="Search chats…"
+          aria-label="Search chats"
+          autocomplete="off"
+        />
+        <button type="submit" class="search-submit" aria-label="Submit search">
+          <span aria-hidden="true">🔍</span>
+        </button>
+      </form>
+
+      <!-- Chat list as semantic unordered list (populated by JS) -->
+      <section aria-labelledby="app-title">
+        <ul class="chat-list" id="chatList" aria-label="Chat conversations">
+          <!-- Chat items will be inserted here via JavaScript -->
+        </ul>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
