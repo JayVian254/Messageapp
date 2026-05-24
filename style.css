@@ -453,3 +453,6 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }
+body.dark-mode-enhanced {
+  filter: contrast(1.05) brightness(1.05);
+}
