@@ -29,7 +29,7 @@
     <!-- Main content area -->
     <main id="main-content">
 
-      <!-- Accessible search form -->
+      <!-- Accessible search form – no separate button, uses overlay icon -->
       <form class="search-box" role="search" aria-label="Search chats">
         <input 
           type="search" 
@@ -39,6 +39,7 @@
           aria-label="Search chats"
           autocomplete="off"
         />
+        <!-- The submit button is still present for accessibility but styled as an overlay -->
         <button type="submit" class="search-submit" aria-label="Submit search">
           <span aria-hidden="true">🔍</span>
         </button>
@@ -53,6 +54,10 @@
 
     </main>
 
+    <!-- Floating Action Button to add a new contact -->
+    <button class="fab" id="addContactBtn" aria-label="Add new contact" title="Add contact">
+      <span aria-hidden="true">+</span>
+    </button>
   </div>
 
   <script src="app.js"></script>
