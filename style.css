@@ -1,1 +1,315 @@
+/* ========== ENHANCED CSS (No HTML/JS changes) ========== */
 
+/* --- Modern CSS Reset & Custom Properties --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Color palette */
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1c1c1c;
+  --bg-hover: #252525;
+  --bg-active: #333333;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #888888;
+  --accent: #0084ff;           /* Messenger blue */
+  --unread-bg: #22c55e;
+  --unread-text: #000000;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+
+  /* Spacing & Sizing */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-full: 999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Global Setup --- */
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
+  min-height: 100vh;
+  overscroll-behavior: none;   /* prevent pull-to-refresh in PWA style */
+}
+
+/* --- App Container --- */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0f0f0f 0%, #111111 100%);
+  min-height: 100vh;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Top Bar (Header) --- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Toolbar icons converted to buttons (still using span for emoji) */
+.top-icons span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  margin-left: 6px;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  background: transparent;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.top-icons span:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.05);
+}
+
+.top-icons span:active {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(0.97);
+}
+
+/* --- Search Box --- */
+.search-box {
+  padding: 12px 16px;
+  position: relative;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  transition: all var(--transition-smooth);
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2) inset;
+}
+
+.search-box input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.search-box input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.2);
+}
+
+/* Add a search icon using pseudo-element if no HTML change allowed */
+.search-box::before {
+  content: '🔍';
+  position: absolute;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* --- Chat List --- */
+.chat-list {
+  padding-bottom: 40px;
+  scroll-behavior: smooth;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  margin: 2px 8px;
+  border-radius: var(--radius-md);
+  border-bottom: none;             /* replaced by subtle background & margin */
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  background: transparent;
+  position: relative;
+}
+
+.chat-item:hover {
+  background: var(--bg-hover);
+  transform: scale(1.005);
+}
+
+.chat-item:active {
+  background: var(--bg-active);
+  transform: scale(0.995);
+}
+
+/* Avatar styling with gradient fallback */
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-right: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add a subtle glow on hover */
+.avatar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent 70%);
+}
+
+/* Chat info layout */
+.chat-info {
+  flex: 1;
+  min-width: 0;      /* prevent overflow */
+}
+
+.chat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.chat-name {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+  letter-spacing: -0.1px;
+}
+
+.chat-message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  line-height: 1.3;
+}
+
+.chat-time {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  flex-shrink: 0;
+  margin-left: 8px;
+  opacity: 0.85;
+}
+
+/* --- Unread Badge (enhanced) --- */
+.unread {
+  background: var(--unread-bg);
+  color: var(--unread-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6px;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.4);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.chat-item:hover .unread {
+  transform: scale(1.1);
+}
+
+/* --- Utility: smooth scrolling for the whole app --- */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* --- Focus visible for accessibility (if converted to buttons) --- */
+.top-icons span:focus-visible,
+.chat-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Optional: subtle animation when chat items appear (can be triggered by JS adding a class) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* If you add class "animate-in" via JS, this will work */
+.chat-item.animate-in {
+  animation: fadeInUp 0.4s ease forwards;
+}
