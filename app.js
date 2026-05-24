@@ -1,34 +1,20 @@
+
 /**
  * Chat Application – Professional & Advanced JavaScript
- * Handles chat list rendering, search filtering, unread management,
- * and persistent data via localStorage with a clean modular architecture.
- *
- * Assumptions (based on existing HTML):
- *   - #chatList: container for chat items (<div> or <ul>)
- *   - #search-input: search field (type="search")
- *   - .top-icons button: search toggle & more options
- *   - Each chat item has .chat-item, .avatar, .chat-name, .chat-message,
- *     .chat-time, .unread
+ * Now includes floating action button to add contacts.
  */
 
 (function () {
   "use strict";
 
-  // --------------------------------------------
-  // 1. Configuration & State
-  // --------------------------------------------
   const STORAGE_KEY = "fakeMessenger_chats";
 
-  // Default dataset – extended with unique IDs for robust tracking
   const DEFAULT_CHATS = [
     { id: "c1", name: "Alex", message: "Where are you?", time: "9:41 PM", unread: 2 },
     { id: "c2", name: "Sarah", message: "Typing...", time: "8:12 PM", unread: 0 },
     { id: "c3", name: "Mike", message: "See you tomorrow", time: "Yesterday", unread: 1 }
   ];
 
-  // --------------------------------------------
-  // 2. Data Management (with persistence)
-  // --------------------------------------------
   function loadChats() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -39,7 +25,6 @@
     } catch (e) {
       console.warn("Chat storage corrupted, resetting to defaults.");
     }
-    // Deep clone defaults to avoid mutation
     return DEFAULT_CHATS.map(chat => ({ ...chat }));
   }
 
@@ -51,40 +36,32 @@
     }
   }
 
-  // --------------------------------------------
-  // 3. Chat Application Class
-  // --------------------------------------------
   class ChatApp {
     constructor() {
-      // State
       this.chats = loadChats();
       this.activeFilter = "";
 
-      // DOM Elements
       this.chatList = document.getElementById("chatList");
       this.searchInput = document.getElementById("search-input");
       this.searchButton = document.querySelector('.top-icons button[aria-label="Search chats"]');
       this.moreButton = document.querySelector('.top-icons button[aria-label="More options"]');
+      this.fab = document.getElementById("addContactBtn");
 
-      // Bind methods
       this.render = this.render.bind(this);
       this.handleSearch = this.handleSearch.bind(this);
       this.handleChatClick = this.handleChatClick.bind(this);
       this.focusSearch = this.focusSearch.bind(this);
       this.showMoreOptions = this.showMoreOptions.bind(this);
+      this.handleAddContact = this.handleAddContact.bind(this);
 
-      // Initialize
       this.init();
     }
 
     init() {
-      // Render immediately
       this.render();
 
-      // Event Listeners
       if (this.searchInput) {
         this.searchInput.addEventListener("input", this.handleSearch);
-        // Optional: clear search on Escape
         this.searchInput.addEventListener("keydown", (e) => {
           if (e.key === "Escape") {
             this.searchInput.value = "";
@@ -103,19 +80,19 @@
         this.moreButton.addEventListener("click", this.showMoreOptions);
       }
 
-      // Use event delegation on chat list for clicks (works even after re-render)
       if (this.chatList) {
         this.chatList.addEventListener("click", this.handleChatClick);
       }
+
+      // Floating action button to add contact
+      if (this.fab) {
+        this.fab.addEventListener("click", this.handleAddContact);
+      }
     }
 
-    // --------------------------------------------
-    // 4. Filtering Logic
-    // --------------------------------------------
     getFilteredChats() {
       const filter = this.activeFilter.trim().toLowerCase();
       if (!filter) return this.chats;
-
       return this.chats.filter(chat =>
         chat.name.toLowerCase().includes(filter) ||
         chat.message.toLowerCase().includes(filter)
@@ -127,9 +104,6 @@
       this.render();
     }
 
-    // --------------------------------------------
-    // 5. Render (efficient innerHTML + event safe)
-    // --------------------------------------------
     render() {
       if (!this.chatList) return;
 
@@ -141,11 +115,10 @@
 
         const chatItem = document.createElement("div");
         chatItem.classList.add("chat-item");
-        chatItem.dataset.chatId = chat.id;         // for event delegation
-        chatItem.setAttribute("role", "listitem"); // if using <ul> list, else "article"
-        chatItem.setAttribute("tabindex", "0");    // make focusable
+        chatItem.dataset.chatId = chat.id;
+        chatItem.setAttribute("role", "listitem");
+        chatItem.setAttribute("tabindex", "0");
 
-        // Use innerHTML for template – safe because data is internal
         chatItem.innerHTML = `
           <div class="avatar">${firstLetter}</div>
           <div class="chat-info">
@@ -158,7 +131,6 @@
           ${chat.unread > 0 ? `<div class="unread">${chat.unread}</div>` : ""}
         `;
 
-        // Add subtle entrance animation (CSS class) if present
         if (window.CSS && CSS.supports("animation", "fadeInUp 0.4s ease")) {
           chatItem.style.animation = `fadeInUp 0.3s ease ${index * 0.05}s both`;
         }
@@ -166,11 +138,9 @@
         fragment.appendChild(chatItem);
       });
 
-      // Clear and update DOM in one operation
       this.chatList.innerHTML = "";
       this.chatList.appendChild(fragment);
 
-      // Show a "no results" message if filtered empty
       if (filtered.length === 0 && this.activeFilter) {
         const emptyMsg = document.createElement("div");
         emptyMsg.className = "chat-item no-results";
@@ -182,11 +152,7 @@
       }
     }
 
-    // --------------------------------------------
-    // 6. Event Handlers
-    // --------------------------------------------
     handleChatClick(e) {
-      // Find closest chat item (delegation)
       const chatItem = e.target.closest(".chat-item");
       if (!chatItem) return;
 
@@ -194,16 +160,13 @@
       const chat = this.chats.find(c => c.id === chatId);
       if (!chat) return;
 
-      // Advanced: clear unread count on click (open conversation)
       if (chat.unread > 0) {
         chat.unread = 0;
-        saveChats(this.chats);   // persist immediately
+        saveChats(this.chats);
         this.render();
       }
 
-      // Simulate opening a chat (could be expanded with modal navigation)
       console.log(`Opening conversation with ${chat.name}`);
-      // For demonstration we could alert, but better to be silent.
     }
 
     focusSearch() {
@@ -214,21 +177,30 @@
     }
 
     showMoreOptions() {
-      // Simple example: toggle a dark mode class or show a tooltip
       document.body.classList.toggle("dark-mode-enhanced");
       console.log("More options clicked – additional functionality can be hooked here.");
     }
 
-    // --------------------------------------------
-    // 7. Utilities
-    // --------------------------------------------
+    handleAddContact() {
+      const name = prompt("Enter contact name:");
+      if (!name || name.trim() === "") return;
+
+      const message = prompt("Enter a short message:") || "Hey there!";
+      const unreadInput = prompt("Unread count (number):", "0");
+      const unread = parseInt(unreadInput, 10) || 0;
+
+      const now = new Date();
+      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      this.addChat(name.trim(), message.trim(), time, unread);
+    }
+
     escapeHTML(str) {
       const div = document.createElement("div");
       div.appendChild(document.createTextNode(str));
       return div.innerHTML;
     }
 
-    // Public method to add a chat (optional expansion)
     addChat(name, message, time, unread = 0) {
       const newChat = {
         id: "c" + Date.now() + Math.random().toString(36).substr(2, 9),
@@ -243,11 +215,8 @@
     }
   }
 
-  // --------------------------------------------
-  // 8. Initialization
-  // --------------------------------------------
   document.addEventListener("DOMContentLoaded", () => {
-    window.chatApp = new ChatApp();  // expose for debugging / external use
+    window.chatApp = new ChatApp();
   });
 
 })();
