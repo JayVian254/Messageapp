@@ -1,9 +1,3 @@
-
-/**
- * Chat Application – Professional & Advanced JavaScript
- * Now includes floating action button to add contacts.
- */
-
 (function () {
   "use strict";
 
@@ -23,7 +17,7 @@
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
     } catch (e) {
-      console.warn("Chat storage corrupted, resetting to defaults.");
+      console.warn("Chat storage corrupted, resetting.");
     }
     return DEFAULT_CHATS.map(chat => ({ ...chat }));
   }
@@ -32,7 +26,7 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
     } catch (e) {
-      console.error("Unable to save chats:", e);
+      console.error("Save failed", e);
     }
   }
 
@@ -41,18 +35,31 @@
       this.chats = loadChats();
       this.activeFilter = "";
 
+      // DOM elements
       this.chatList = document.getElementById("chatList");
       this.searchInput = document.getElementById("search-input");
-      this.searchButton = document.querySelector('.top-icons button[aria-label="Search chats"]');
-      this.moreButton = document.querySelector('.top-icons button[aria-label="More options"]');
+      this.hamburgerBtn = document.getElementById("hamburgerBtn");
+      this.sideDrawer = document.getElementById("sideDrawer");
+      this.drawerBackdrop = document.getElementById("drawerBackdrop");
+      this.moreBtn = document.querySelector(".more-btn");
       this.fab = document.getElementById("addContactBtn");
+      this.addModal = document.getElementById("addModal");
+      this.cancelAddBtn = document.getElementById("cancelAddBtn");
+      this.confirmAddBtn = document.getElementById("confirmAddBtn");
+      this.newName = document.getElementById("newName");
+      this.newMessage = document.getElementById("newMessage");
+      this.newUnread = document.getElementById("newUnread");
 
+      // Bind methods
       this.render = this.render.bind(this);
       this.handleSearch = this.handleSearch.bind(this);
       this.handleChatClick = this.handleChatClick.bind(this);
-      this.focusSearch = this.focusSearch.bind(this);
+      this.toggleDrawer = this.toggleDrawer.bind(this);
+      this.closeDrawer = this.closeDrawer.bind(this);
+      this.openModal = this.openModal.bind(this);
+      this.closeModal = this.closeModal.bind(this);
+      this.confirmAdd = this.confirmAdd.bind(this);
       this.showMoreOptions = this.showMoreOptions.bind(this);
-      this.handleAddContact = this.handleAddContact.bind(this);
 
       this.init();
     }
@@ -60,6 +67,7 @@
     init() {
       this.render();
 
+      // Search
       if (this.searchInput) {
         this.searchInput.addEventListener("input", this.handleSearch);
         this.searchInput.addEventListener("keydown", (e) => {
@@ -72,22 +80,49 @@
         });
       }
 
-      if (this.searchButton) {
-        this.searchButton.addEventListener("click", this.focusSearch);
+      // Hamburger toggle
+      if (this.hamburgerBtn) {
+        this.hamburgerBtn.addEventListener("click", this.toggleDrawer);
+      }
+      if (this.drawerBackdrop) {
+        this.drawerBackdrop.addEventListener("click", this.closeDrawer);
       }
 
-      if (this.moreButton) {
-        this.moreButton.addEventListener("click", this.showMoreOptions);
+      // More button
+      if (this.moreBtn) {
+        this.moreBtn.addEventListener("click", this.showMoreOptions);
       }
 
+      // Chat list delegation
       if (this.chatList) {
         this.chatList.addEventListener("click", this.handleChatClick);
       }
 
-      // Floating action button to add contact
+      // FAB opens modal
       if (this.fab) {
-        this.fab.addEventListener("click", this.handleAddContact);
+        this.fab.addEventListener("click", this.openModal);
       }
+
+      // Modal buttons
+      if (this.cancelAddBtn) {
+        this.cancelAddBtn.addEventListener("click", this.closeModal);
+      }
+      if (this.confirmAddBtn) {
+        this.confirmAddBtn.addEventListener("click", this.confirmAdd);
+      }
+
+      // Close modal on overlay click
+      if (this.addModal) {
+        this.addModal.addEventListener("click", (e) => {
+          if (e.target === this.addModal) this.closeModal();
+        });
+      }
+    }
+
+    // ---------- Search ----------
+    handleSearch(e) {
+      this.activeFilter = e.target.value;
+      this.render();
     }
 
     getFilteredChats() {
@@ -99,11 +134,7 @@
       );
     }
 
-    handleSearch(e) {
-      this.activeFilter = e.target.value;
-      this.render();
-    }
-
+    // ---------- Render ----------
     render() {
       if (!this.chatList) return;
 
@@ -112,7 +143,6 @@
 
       filtered.forEach((chat, index) => {
         const firstLetter = chat.name.charAt(0);
-
         const chatItem = document.createElement("div");
         chatItem.classList.add("chat-item");
         chatItem.dataset.chatId = chat.id;
@@ -155,50 +185,56 @@
     handleChatClick(e) {
       const chatItem = e.target.closest(".chat-item");
       if (!chatItem) return;
-
       const chatId = chatItem.dataset.chatId;
       const chat = this.chats.find(c => c.id === chatId);
       if (!chat) return;
-
       if (chat.unread > 0) {
         chat.unread = 0;
         saveChats(this.chats);
         this.render();
       }
-
       console.log(`Opening conversation with ${chat.name}`);
     }
 
-    focusSearch() {
-      if (this.searchInput) {
-        this.searchInput.focus();
-        this.searchInput.select();
-      }
+    // ---------- Drawer ----------
+    toggleDrawer() {
+      this.sideDrawer.classList.toggle("open");
+      this.drawerBackdrop.classList.toggle("visible");
+    }
+    closeDrawer() {
+      this.sideDrawer.classList.remove("open");
+      this.drawerBackdrop.classList.remove("visible");
     }
 
     showMoreOptions() {
       document.body.classList.toggle("dark-mode-enhanced");
-      console.log("More options clicked – additional functionality can be hooked here.");
+      console.log("More options toggled");
     }
 
-    handleAddContact() {
-      const name = prompt("Enter contact name:");
-      if (!name || name.trim() === "") return;
-
-      const message = prompt("Enter a short message:") || "Hey there!";
-      const unreadInput = prompt("Unread count (number):", "0");
-      const unread = parseInt(unreadInput, 10) || 0;
-
+    // ---------- Add Contact Modal ----------
+    openModal() {
+      this.addModal.classList.add("active");
+      this.newName.focus();
+    }
+    closeModal() {
+      this.addModal.classList.remove("active");
+      this.newName.value = "";
+      this.newMessage.value = "";
+      this.newUnread.value = "0";
+    }
+    confirmAdd() {
+      const name = this.newName.value.trim();
+      if (!name) {
+        alert("Name is required");
+        return;
+      }
+      const message = this.newMessage.value.trim() || "Hey there!";
+      const unread = parseInt(this.newUnread.value, 10) || 0;
       const now = new Date();
       const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      this.addChat(name.trim(), message.trim(), time, unread);
-    }
-
-    escapeHTML(str) {
-      const div = document.createElement("div");
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
+      this.addChat(name, message, time, unread);
+      this.closeModal();
     }
 
     addChat(name, message, time, unread = 0) {
@@ -213,10 +249,15 @@
       saveChats(this.chats);
       this.render();
     }
+
+    escapeHTML(str) {
+      const div = document.createElement("div");
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     window.chatApp = new ChatApp();
   });
-
 })();
