@@ -143,7 +143,7 @@
 
       filtered.forEach((chat, index) => {
         const firstLetter = chat.name.charAt(0);
-        const chatItem = document.createElement("div");
+        const chatItem = document.createElement("li");
         chatItem.classList.add("chat-item");
         chatItem.dataset.chatId = chat.id;
         chatItem.setAttribute("role", "listitem");
