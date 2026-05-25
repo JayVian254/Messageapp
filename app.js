@@ -62,13 +62,23 @@
       this.chats = loadChats();
       this.activeFilter = "";
       this.selectedChats = new Set();
-this.selectionMode = false;
+      this.selectionMode = false;
 
-this.longPressTimer = null;
-this.longPressedChatId = null;
+      this.longPressTimer = null;
+      this.longPressedChatId = null;
 
-this.tapCount = 0;
-this.tapTimer = null;
+      this.tapCount = 0;
+      this.tapTimer = null;
+      this.appTitle = document.getElementById("app-title");
+
+      this.contextMenu = document.getElementById("contextMenu");
+      this.contextBackdrop = document.getElementById("contextBackdrop");
+
+      this.pinBtn = document.getElementById("pinChatBtn");
+      this.unreadBtn = document.getElementById("markUnreadBtn");
+      this.muteBtn = document.getElementById("muteChatBtn");
+      this.archiveBtn = document.getElementById("archiveChatBtn");
+      this.deleteBtn = document.getElementById("deleteChatBtn");
 
       // DOM elements
       this.chatList = document.getElementById("chatList");
@@ -107,6 +117,8 @@ this.tapTimer = null;
   }
 });
       const searchForm = document.querySelector(".search-box");
+
+
 
 if (searchForm) {
   searchForm.addEventListener("submit", (e) => {
