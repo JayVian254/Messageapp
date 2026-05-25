@@ -118,7 +118,77 @@
 });
       const searchForm = document.querySelector(".search-box");
 
+// Triple tap secret mode
+if (this.appTitle) {
+  this.appTitle.addEventListener(
+    "click",
+    this.handleSecretTap.bind(this)
+  );
+}
 
+// Long press handling
+if (this.chatList) {
+
+  this.chatList.addEventListener("pointerdown", (e) => {
+
+    const item = e.target.closest(".chat-item");
+
+    if (!item) return;
+
+    const chatId = item.dataset.chatId;
+
+    this.longPressTimer = setTimeout(() => {
+
+      navigator.vibrate?.(50);
+
+      this.longPressedChatId = chatId;
+
+      this.openContextMenu();
+
+    }, 500);
+
+  });
+
+  this.chatList.addEventListener("pointerup", () => {
+    clearTimeout(this.longPressTimer);
+  });
+
+  this.chatList.addEventListener("pointerleave", () => {
+    clearTimeout(this.longPressTimer);
+  });
+
+}
+
+// Context menu buttons
+this.pinBtn?.addEventListener(
+  "click",
+  () => this.togglePin()
+);
+
+this.unreadBtn?.addEventListener(
+  "click",
+  () => this.markUnread()
+);
+
+this.muteBtn?.addEventListener(
+  "click",
+  () => this.toggleMute()
+);
+
+this.archiveBtn?.addEventListener(
+  "click",
+  () => this.archiveChat()
+);
+
+this.deleteBtn?.addEventListener(
+  "click",
+  () => this.deleteChat()
+);
+
+this.contextBackdrop?.addEventListener(
+  "click",
+  () => this.closeContextMenu()
+);
 
 if (searchForm) {
   searchForm.addEventListener("submit", (e) => {
