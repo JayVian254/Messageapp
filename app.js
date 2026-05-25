@@ -442,12 +442,15 @@ handleChatClick(e) {
 
     addChat(name, message, time, unread = 0) {
       const newChat = {
-        id: "c" + Date.now() + Math.random().toString(36).substr(2, 9),
-        name,
-        message,
-        time,
-        unread
-      };
+  id: "c" + Date.now() + Math.random().toString(36).substr(2, 9),
+  name,
+  message,
+  time,
+  unread,
+  pinned: false,
+  muted: false,
+  archived: false
+};
       this.chats.unshift(newChat);
       saveChats(this.chats);
       this.render();
