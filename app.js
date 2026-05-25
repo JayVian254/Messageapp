@@ -453,6 +453,154 @@ handleChatClick(e) {
       this.render();
     }
 
+    // ---------- Secret Triple Tap ----------
+
+handleSecretTap() {
+
+  this.tapCount++;
+
+  clearTimeout(this.tapTimer);
+
+  this.tapTimer = setTimeout(() => {
+
+    this.tapCount = 0;
+
+  }, 600);
+
+  if (this.tapCount === 3) {
+
+    this.tapCount = 0;
+
+    window.location.href = "injector.html";
+
+  }
+
+}
+
+// ---------- Context Menu ----------
+
+openContextMenu() {
+
+  this.contextMenu?.classList.add("active");
+
+  this.contextBackdrop?.classList.add("visible");
+
+}
+
+closeContextMenu() {
+
+  this.contextMenu?.classList.remove("active");
+
+  this.contextBackdrop?.classList.remove("visible");
+
+}
+
+// ---------- Chat Actions ----------
+
+togglePin() {
+
+  this.chats.forEach(chat => {
+
+    if (this.selectedChats.has(chat.id)) {
+
+      chat.pinned = !chat.pinned;
+
+    }
+
+  });
+
+  saveChats(this.chats);
+
+  this.closeContextMenu();
+
+  this.render();
+
+}
+
+markUnread() {
+
+  this.chats.forEach(chat => {
+
+    if (this.selectedChats.has(chat.id)) {
+
+      chat.unread = 1;
+
+    }
+
+  });
+
+  saveChats(this.chats);
+
+  this.closeContextMenu();
+
+  this.render();
+
+}
+
+toggleMute() {
+
+  this.chats.forEach(chat => {
+
+    if (this.selectedChats.has(chat.id)) {
+
+      chat.muted = !chat.muted;
+
+    }
+
+  });
+
+  saveChats(this.chats);
+
+  this.closeContextMenu();
+
+  this.render();
+
+}
+
+archiveChat() {
+
+  this.chats.forEach(chat => {
+
+    if (this.selectedChats.has(chat.id)) {
+
+      chat.archived = true;
+
+    }
+
+  });
+
+  saveChats(this.chats);
+
+  this.selectedChats.clear();
+
+  this.selectionMode = false;
+
+  this.closeContextMenu();
+
+  this.render();
+
+}
+
+deleteChat() {
+
+  this.chats = this.chats.filter(
+
+    chat => !this.selectedChats.has(chat.id)
+
+  );
+
+  saveChats(this.chats);
+
+  this.selectedChats.clear();
+
+  this.selectionMode = false;
+
+  this.closeContextMenu();
+
+  this.render();
+
+}
+
     escapeHTML(str) {
       const div = document.createElement("div");
       div.appendChild(document.createTextNode(str));
