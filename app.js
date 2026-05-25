@@ -348,19 +348,51 @@ if (this.selectedChats.has(chat.id)) {
       }
     }
 
-    handleChatClick(e) {
-      const chatItem = e.target.closest(".chat-item");
-      if (!chatItem) return;
-      const chatId = chatItem.dataset.chatId;
-      const chat = this.chats.find(c => c.id === chatId);
-      if (!chat) return;
-      if (chat.unread > 0) {
-        chat.unread = 0;
-        saveChats(this.chats);
-        this.render();
-      }
-      console.log(`Opening conversation with ${chat.name}`);
+handleChatClick(e) {
+
+  const chatItem =
+    e.target.closest(".chat-item");
+
+  if (!chatItem) return;
+
+  const chatId =
+    chatItem.dataset.chatId;
+
+  const chat =
+    this.chats.find(c => c.id === chatId);
+
+  if (!chat) return;
+
+  // Selection mode
+  if (this.selectionMode) {
+
+    if (this.selectedChats.has(chatId)) {
+
+      this.selectedChats.delete(chatId);
+
+    } else {
+
+      this.selectedChats.add(chatId);
+
     }
+
+    if (this.selectedChats.size === 0) {
+
+      this.selectionMode = false;
+
+    }
+
+    this.render();
+
+    return;
+
+  }
+
+  // Open future conversation page
+  window.location.href =
+    `chat.html?id=${chatId}`;
+
+}
 
     // ---------- Drawer ----------
     toggleDrawer() {
