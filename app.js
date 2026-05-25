@@ -256,13 +256,38 @@ if (searchForm) {
     }
 
     getFilteredChats() {
-      const filter = this.activeFilter.trim().toLowerCase();
-      if (!filter) return this.chats;
-      return this.chats.filter(chat =>
-        chat.name.toLowerCase().includes(filter) ||
-        chat.message.toLowerCase().includes(filter)
-      );
-    }
+
+  const filter =
+    this.activeFilter.trim().toLowerCase();
+
+  let chats =
+    this.chats.filter(chat => !chat.archived);
+
+  if (filter) {
+
+    chats = chats.filter(chat =>
+
+      chat.name.toLowerCase().includes(filter)
+      ||
+      chat.message.toLowerCase().includes(filter)
+
+    );
+
+  }
+
+  chats.sort((a, b) => {
+
+    if (a.pinned && !b.pinned) return -1;
+
+    if (!a.pinned && b.pinned) return 1;
+
+    return 0;
+
+  });
+
+  return chats;
+
+}
 
     // ---------- Render ----------
     render() {
