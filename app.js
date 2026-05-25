@@ -143,8 +143,13 @@ if (this.chatList) {
 
       this.longPressedChatId = chatId;
 
-      this.openContextMenu();
+      this.selectionMode = true;
 
+this.selectedChats.add(chatId);
+
+this.render();
+
+this.openContextMenu();
     }, 500);
 
   });
