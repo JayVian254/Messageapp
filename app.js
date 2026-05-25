@@ -4,10 +4,37 @@
   const STORAGE_KEY = "fakeMessenger_chats";
 
   const DEFAULT_CHATS = [
-    { id: "c1", name: "Alex", message: "Where are you?", time: "9:41 PM", unread: 2 },
-    { id: "c2", name: "Sarah", message: "Typing...", time: "8:12 PM", unread: 0 },
-    { id: "c3", name: "Mike", message: "See you tomorrow", time: "Yesterday", unread: 1 }
-  ];
+  {
+    id: "c1",
+    name: "Alex",
+    message: "Where are you?",
+    time: "9:41 PM",
+    unread: 2,
+    pinned: false,
+    muted: false,
+    archived: false
+  },
+  {
+    id: "c2",
+    name: "Sarah",
+    message: "Typing...",
+    time: "8:12 PM",
+    unread: 0,
+    pinned: true,
+    muted: false,
+    archived: false
+  },
+  {
+    id: "c3",
+    name: "Mike",
+    message: "See you tomorrow",
+    time: "Yesterday",
+    unread: 1,
+    pinned: false,
+    muted: false,
+    archived: false
+  }
+];
 
   function loadChats() {
     try {
@@ -34,6 +61,14 @@
     constructor() {
       this.chats = loadChats();
       this.activeFilter = "";
+      this.selectedChats = new Set();
+this.selectionMode = false;
+
+this.longPressTimer = null;
+this.longPressedChatId = null;
+
+this.tapCount = 0;
+this.tapTimer = null;
 
       // DOM elements
       this.chatList = document.getElementById("chatList");
