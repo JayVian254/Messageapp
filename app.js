@@ -300,6 +300,17 @@ if (searchForm) {
         const firstLetter = chat.name.charAt(0);
         const chatItem = document.createElement("li");
         chatItem.classList.add("chat-item");
+        if (chat.pinned) {
+  chatItem.classList.add("pinned");
+}
+
+if (chat.muted) {
+  chatItem.classList.add("muted");
+}
+
+if (this.selectedChats.has(chat.id)) {
+  chatItem.classList.add("selected");
+}
         chatItem.dataset.chatId = chat.id;
         chatItem.setAttribute("role", "listitem");
         chatItem.setAttribute("tabindex", "0");
