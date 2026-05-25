@@ -114,6 +114,7 @@
   if (e.key === "Escape") {
     this.closeDrawer();
     this.closeModal();
+    this.closeContextMenu();
   }
 });
       const searchForm = document.querySelector(".search-box");
@@ -144,6 +145,8 @@ if (this.chatList) {
       this.longPressedChatId = chatId;
 
       this.selectionMode = true;
+
+this.selectedChats.clear();
 
 this.selectedChats.add(chatId);
 
