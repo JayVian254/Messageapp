@@ -456,3 +456,98 @@ body {
 body.dark-mode-enhanced {
   filter: contrast(1.05) brightness(1.05);
 }
+
+/* ---------- Context Menu ---------- */
+
+.context-backdrop {
+
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,0.5);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: 0.2s ease;
+
+  z-index: 60;
+
+}
+
+.context-backdrop.visible {
+
+  opacity: 1;
+  pointer-events: auto;
+
+}
+
+.context-menu {
+
+  position: fixed;
+
+  left: 50%;
+  bottom: -400px;
+
+  transform: translateX(-50%);
+
+  width: 90%;
+  max-width: 360px;
+
+  background: #1d1d1d;
+
+  border-radius: 24px 24px 0 0;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  z-index: 70;
+
+  transition: bottom 0.25s ease;
+
+}
+
+.context-menu.active {
+
+  bottom: 0;
+
+}
+
+.context-menu button {
+
+  background: rgba(255,255,255,0.06);
+
+  border: none;
+
+  color: white;
+
+  padding: 16px;
+
+  border-radius: 14px;
+
+  text-align: left;
+
+  font-size: 15px;
+
+}
+
+.selected {
+
+  background: rgba(0,132,255,0.18);
+
+}
+
+.pinned {
+
+  border-left: 3px solid #0084ff;
+
+}
+
+.muted {
+
+  opacity: 0.7;
+
+}
