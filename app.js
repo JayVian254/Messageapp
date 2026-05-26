@@ -1,4 +1,3 @@
-localStorage.clear()
   (function () {
   "use strict";
 
