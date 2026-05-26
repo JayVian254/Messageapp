@@ -4,36 +4,64 @@
   const STORAGE_KEY = "fakeMessenger_chats";
 
   const DEFAULT_CHATS = [
+
   {
     id: "c1",
     name: "Alex",
-    message: "Where are you?",
-    time: "9:41 PM",
-    unread: 2,
     pinned: false,
     muted: false,
-    archived: false
+    archived: false,
+
+    messages: [
+      {
+        text: "Hey",
+        direction: "incoming",
+        state: "read",
+        time: "9:38 PM"
+      },
+      {
+        text: "Where are you?",
+        direction: "incoming",
+        state: "delivered",
+        time: "9:41 PM"
+      }
+    ]
   },
+
   {
     id: "c2",
     name: "Sarah",
-    message: "Typing...",
-    time: "8:12 PM",
-    unread: 0,
     pinned: true,
     muted: false,
-    archived: false
+    archived: false,
+
+    messages: [
+      {
+        text: "Typing later?",
+        direction: "incoming",
+        state: "read",
+        time: "8:12 PM"
+      }
+    ]
   },
+
   {
     id: "c3",
     name: "Mike",
-    message: "See you tomorrow",
-    time: "Yesterday",
-    unread: 1,
     pinned: false,
     muted: false,
-    archived: false
+    archived: false,
+
+    messages: [
+      {
+        text: "See you tomorrow",
+        direction: "incoming",
+        state: "read",
+        time: "Yesterday"
+      }
+    ]
   }
+
 ];
 
   function loadChats() {
@@ -277,11 +305,34 @@ if (searchForm) {
 
       chat.name.toLowerCase().includes(filter)
       ||
-      chat.message.toLowerCase().includes(filter)
+      (chat.messages?.[chat.messages.length - 1]?.text || "")
+  .toLowerCase()
+  .includes(filter)
 
     );
 
   }
+      getLastMessage(chat) {
+
+  if (!chat.messages || chat.messages.length === 0) {
+    return null;
+  }
+
+  return chat.messages[chat.messages.length - 1];
+
+}
+
+getUnreadCount(chat) {
+
+  if (!chat.messages) return 0;
+
+  return chat.messages.filter(
+    msg =>
+      msg.direction === "incoming" &&
+      msg.state !== "read"
+  ).length;
+
+}
 
   chats.sort((a, b) => {
 
@@ -306,6 +357,16 @@ if (searchForm) {
 
       filtered.forEach((chat, index) => {
         const firstLetter = chat.name.charAt(0);
+ const lastMessage = this.getLastMessage(chat);
+
+const previewText =
+  lastMessage?.text || "No messages";
+
+const previewTime =
+  lastMessage?.time || "";
+
+const unreadCount =
+  this.getUnreadCount(chat);       
         const chatItem = document.createElement("li");
         chatItem.classList.add("chat-item");
         if (chat.pinned) {
@@ -328,12 +389,14 @@ if (this.selectedChats.has(chat.id)) {
           <div class="chat-info">
             <div class="chat-top">
               <div class="chat-name">${this.escapeHTML(chat.name)}</div>
-              <div class="chat-time">${this.escapeHTML(chat.time)}</div>
+              <div class="chat-time">${this.escapeHTML(previewTime)}</div>
+              </div>
+            <div class="chat-message">${this.escapeHTML(previewText)}</div>
             </div>
-            <div class="chat-message">${this.escapeHTML(chat.message)}</div>
-          </div>
-          ${chat.unread > 0 ? `<div class="unread">${chat.unread}</div>` : ""}
-        `;
+          ${unreadCount > 0
+  ? `<div class="unread">${unreadCount}</div>`
+  : ""}
+  `;
 
         if (window.CSS && CSS.supports("animation", "fadeInUp 0.4s ease")) {
           chatItem.style.animation = `fadeInUp 0.3s ease ${index * 0.05}s both`;
@@ -446,13 +509,21 @@ handleChatClick(e) {
     addChat(name, message, time, unread = 0) {
       const newChat = {
   id: "c" + Date.now() + Math.random().toString(36).substr(2, 9),
+
   name,
-  message,
-  time,
-  unread,
+
   pinned: false,
   muted: false,
-  archived: false
+  archived: false,
+
+  messages: [
+    {
+      text: message,
+      direction: "incoming",
+      state: unread > 0 ? "delivered" : "read",
+      time
+    }
+  ]
 };
       this.chats.unshift(newChat);
       saveChats(this.chats);
