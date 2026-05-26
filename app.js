@@ -1,4 +1,5 @@
-(function () {
+localStorage.clear()
+  (function () {
   "use strict";
 
   const STORAGE_KEY = "fakeMessenger_chats";
