@@ -179,6 +179,7 @@ this.selectedChats.clear();
 this.selectedChats.add(chatId);
 
 this.render();
+      item.dataset.longPressed = "true";
 
 this.openContextMenu();
     }, 500);
@@ -464,6 +465,13 @@ handleChatClick(e) {
     e.target.closest(".chat-item");
 
   if (!chatItem) return;
+  if (chatItem.dataset.longPressed === "true") {
+
+  chatItem.dataset.longPressed = "false";
+
+  return;
+
+  }
 
   const chatId =
     chatItem.dataset.chatId;
@@ -627,11 +635,13 @@ togglePin() {
 
   saveChats(this.chats);
 
+  this.clearSelection();
+
   this.closeContextMenu();
 
   this.render();
 
-}
+} 
 
 markUnread() {
 
@@ -654,6 +664,8 @@ markUnread() {
 
   saveChats(this.chats);
 
+  this.clearSelection();
+
   this.closeContextMenu();
 
   this.render();
@@ -673,6 +685,8 @@ toggleMute() {
   });
 
   saveChats(this.chats);
+
+  this.clearSelection();
 
   this.closeContextMenu();
 
@@ -694,9 +708,7 @@ archiveChat() {
 
   saveChats(this.chats);
 
-  this.selectedChats.clear();
-
-  this.selectionMode = false;
+  this.clearSelection();
 
   this.closeContextMenu();
 
@@ -714,13 +726,18 @@ deleteChat() {
 
   saveChats(this.chats);
 
-  this.selectedChats.clear();
-
-  this.selectionMode = false;
+  this.clearSelection();
 
   this.closeContextMenu();
 
   this.render();
+
+}
+clearSelection() {
+
+  this.selectedChats.clear();
+
+  this.selectionMode = false;
 
 }
 
