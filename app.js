@@ -291,7 +291,8 @@ if (searchForm) {
       this.render();
     }
 
-    getFilteredChats() {
+    
+ getFilteredChats() {
 
   const filter =
     this.activeFilter.trim().toLowerCase();
@@ -306,10 +307,48 @@ if (searchForm) {
       chat.name.toLowerCase().includes(filter)
       ||
       (chat.messages?.[chat.messages.length - 1]?.text || "")
-  .toLowerCase()
-  .includes(filter)
+        .toLowerCase()
+        .includes(filter)
 
     );
+
+  }
+
+  chats.sort((a, b) => {
+
+    if (a.pinned && !b.pinned) return -1;
+
+    if (!a.pinned && b.pinned) return 1;
+
+    return 0;
+
+  });
+
+  return chats;
+
+}
+
+getLastMessage(chat) {
+
+  if (!chat.messages || chat.messages.length === 0) {
+    return null;
+  }
+
+  return chat.messages[chat.messages.length - 1];
+
+}
+
+getUnreadCount(chat) {
+
+  if (!chat.messages) return 0;
+
+  return chat.messages.filter(
+    msg =>
+      msg.direction === "incoming" &&
+      msg.state !== "read"
+  ).length;
+
+}
 
   }
       getLastMessage(chat) {
@@ -600,7 +639,14 @@ markUnread() {
 
     if (this.selectedChats.has(chat.id)) {
 
-      chat.unread = 1;
+      const lastMessage =
+        chat.messages?.[chat.messages.length - 1];
+
+      if (lastMessage) {
+
+        lastMessage.state = "delivered";
+
+      }
 
     }
 
